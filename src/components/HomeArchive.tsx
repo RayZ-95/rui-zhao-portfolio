@@ -442,12 +442,19 @@ type SceneState = {
 
 function getLayoutScale(width: number, height: number) {
   const fit = Math.min(width / 360, height / 500);
+  if (width < 768) {
+    return THREE.MathUtils.clamp(fit * 0.93, 0.64, 1.05);
+  }
   return THREE.MathUtils.clamp(fit * 1.133, 0.787, 1.488);
 }
 
 function getCameraBaseZ(layoutScale: number, width: number) {
-  const mobileBoost = width < 768 ? 1.35 : 1;
+  const mobileBoost = width < 768 ? 1.45 : 1;
   return (12.2 / Math.sqrt(layoutScale)) * mobileBoost;
+}
+
+function getMobileGroupY(width: number, scale: number) {
+  return (width < 768 ? 0.28 : ARCHIVE_GROUP_Y_OFFSET) * scale;
 }
 
 export function HomeArchive({ items }: { items: HomeArchiveItem[] }) {
@@ -571,7 +578,7 @@ export function HomeArchive({ items }: { items: HomeArchiveItem[] }) {
       group.scale.setScalar(layoutScale);
       if (selectedIndexRef.current < 0) {
         group.position.x = width < 768 ? 0.35 * layoutScale : 1.1 * layoutScale;
-        group.position.y = ARCHIVE_GROUP_Y_OFFSET * layoutScale;
+        group.position.y = getMobileGroupY(width, layoutScale);
       }
 
       const state = sceneStateRef.current;
@@ -692,7 +699,7 @@ export function HomeArchive({ items }: { items: HomeArchiveItem[] }) {
         const cameraTargetY = hasSelection ? 0 : -browseLayer.y * 0.18;
         const cameraTargetZ = hasSelection ? baseZ - 1.2 : baseZ - travel * browse;
         const targetGroupX = hasSelection ? 0 : width < 768 ? 0.35 * scale : 1.1 * scale;
-        const targetGroupY = hasSelection ? 0 : ARCHIVE_GROUP_Y_OFFSET * scale;
+        const targetGroupY = hasSelection ? 0 : getMobileGroupY(width, scale);
 
         camera.position.x += (cameraTargetX - camera.position.x) * 0.08;
         camera.position.y += (cameraTargetY - camera.position.y) * 0.08;
