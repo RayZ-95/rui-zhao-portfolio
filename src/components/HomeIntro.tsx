@@ -84,14 +84,24 @@ export function HomeIntro({ onComplete }: { onComplete: () => void }) {
       if (event.key === "Enter" || event.key === " ") dismiss();
     };
 
+    const handlePointerUp = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") dismiss();
+    };
+
+    const handleClick = () => dismiss();
+
     window.addEventListener("wheel", handleWheel, { passive: true });
     window.addEventListener("keydown", handleKeydown);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("click", handleClick);
 
     return () => {
       introTimeline.kill();
       roleLoop.kill();
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("keydown", handleKeydown);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("click", handleClick);
     };
   }, [onComplete]);
 
