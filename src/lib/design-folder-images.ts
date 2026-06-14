@@ -1,8 +1,6 @@
-import fs from "fs";
-import path from "path";
 import { sortDesignImagesByNumber } from "./content";
+import { designFolderManifest } from "./design-folder-manifest";
 
-const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
 const COVER_FILENAMES = new Set([
   "cover.png",
   "cover.jpg",
@@ -12,12 +10,8 @@ const COVER_FILENAMES = new Set([
   "list-cover.png"
 ]);
 
-function isImageFile(filename: string): boolean {
-  return IMAGE_EXTENSIONS.has(path.extname(filename).toLowerCase());
-}
-
-function isCoverFile(filename: string): boolean {
-  return COVER_FILENAMES.has(filename.toLowerCase());
+function filenameFromWebPath(webPath: string): string {
+  return webPath.split("/").pop() ?? "";
 }
 
 export function imagesFromPublicFolder(webPath: string): string[] {
@@ -28,26 +22,20 @@ export function resolveFolderAssets(webPath: string): {
   coverImage: string;
   galleryImages: string[];
 } {
-  const normalized = webPath.startsWith("/") ? webPath.slice(1) : webPath;
-  const folderPath = path.join(process.cwd(), "public", normalized);
+  const normalized = webPath.startsWith("/") ? webPath : `/${webPath}`;
+  const files = designFolderManifest[normalized] ?? [];
 
-  if (!fs.existsSync(folderPath)) {
+  if (files.length === 0) {
     return { coverImage: "", galleryImages: [] };
   }
 
-  const files = fs
-    .readdirSync(folderPath)
-    .filter((filename) => !filename.startsWith(".") && isImageFile(filename));
+  const coverImage = files.find((image) => COVER_FILENAMES.has(filenameFromWebPath(image).toLowerCase()));
+  const portfolioFiles = files.filter((image) => !COVER_FILENAMES.has(filenameFromWebPath(image).toLowerCase()));
+  const sortedPortfolio = sortDesignImagesByNumber(portfolioFiles);
 
-  const webFolder = `/${normalized.replace(/\\/g, "/")}`;
-  const toWebPath = (filename: string) => `${webFolder}/${filename}`;
-  const coverFile = files.find((filename) => isCoverFile(filename));
-  const portfolioFiles = files.filter((filename) => !isCoverFile(filename));
-  const sortedPortfolio = sortDesignImagesByNumber(portfolioFiles.map(toWebPath));
-
-  if (coverFile) {
+  if (coverImage) {
     return {
-      coverImage: toWebPath(coverFile),
+      coverImage,
       galleryImages: sortedPortfolio
     };
   }
