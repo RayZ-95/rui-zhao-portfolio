@@ -109,6 +109,15 @@
   object-fit: cover;
 }
 
+.home-page-background__fallback {
+  background:
+    radial-gradient(circle at 50% 70%, rgba(242, 205, 92, 0.72) 0%, rgba(242, 205, 92, 0.42) 23%, rgba(242, 205, 92, 0) 56%),
+    radial-gradient(circle at 42% 76%, rgba(255, 238, 157, 0.58) 0%, rgba(255, 238, 157, 0.26) 30%, rgba(255, 238, 157, 0) 62%),
+    linear-gradient(180deg, #f4f4f0 0%, #ecebe4 46%, #efe9d2 100%);
+  filter: blur(0.2px);
+  transform: translateY(6%);
+}
+
 html:has(.site-shell--home),
 html:has(.site-shell--home) body {
   height: 100%;

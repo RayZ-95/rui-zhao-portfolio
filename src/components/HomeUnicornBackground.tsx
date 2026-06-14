@@ -4,7 +4,6 @@ import { UnicornScene } from "unicornstudio-react/next";
 import { useEffect, useState } from "react";
 
 const HOME_UNICORN_SCENE = "/videos/frosted-glass-yellow-full-glass-scene.json";
-const HOME_BACKGROUND_FALLBACK = "/videos/frosted-glass-tiles-remix-scene.gif";
 
 export function HomeUnicornBackground() {
   const [useMobileFallback, setUseMobileFallback] = useState(true);
@@ -22,7 +21,7 @@ export function HomeUnicornBackground() {
   return (
     <div aria-hidden className="home-page-background">
       {useMobileFallback ? (
-        <img alt="" className="home-page-background__fallback" src={HOME_BACKGROUND_FALLBACK} />
+        <div className="home-page-background__fallback" />
       ) : (
         <UnicornScene
           className="home-page-background__scene"
