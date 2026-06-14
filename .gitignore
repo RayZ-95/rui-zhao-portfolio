@@ -1,0 +1,12 @@
+.next
+node_modules
+out
+dist
+.env
+.env*.local
+npm-debug.log*
+*.tsbuildinfo
+.DS_Store
+.preview
+.vercel
+public/images/designs/TANG DYNASTY/毕设虚拟走秀.mp4
