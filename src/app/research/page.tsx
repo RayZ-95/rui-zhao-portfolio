@@ -25,7 +25,7 @@ export default function ResearchPage() {
 
         <div className="research-layout">
           <aside className="research-layout-nav">
-            <ResearchNav items={researchNavItems} />
+            <ResearchNav items={researchNavItems} label="Research" />
           </aside>
 
           <div className="research-layout-content">
